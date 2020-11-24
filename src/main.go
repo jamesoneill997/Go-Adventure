@@ -18,16 +18,10 @@ func fileReader(path string) []byte {
 	return data
 }
 
-func main() {
-	arcNames := []string{}
+func parseStory(arcNames []string, jsonArcs map[string]interface{}) *templates.Story {
 
-	jsonArcs := make(map[string]interface{})
-
+	story := new(templates.Story)
 	arcs := make([]templates.Arc, 25)
-
-	file := fileReader("./gopher.json")
-
-	json.Unmarshal(file, &jsonArcs)
 
 	for k := range jsonArcs {
 		arcNames = append(arcNames, k)
@@ -43,9 +37,24 @@ func main() {
 
 		//trim array to minimum required size
 		if i == len(arcNames)-1 {
-			arcs = arcs[:i]
+			arcs = arcs[:i-1]
 		}
 	}
+	story.Arcs = arcs
 
-	fmt.Println(arcs)
+	return story
+}
+
+func main() {
+	arcNames := []string{}
+
+	jsonArcs := make(map[string]interface{})
+
+	file := fileReader("./gopher.json")
+
+	json.Unmarshal(file, &jsonArcs)
+
+	story := parseStory(arcNames, jsonArcs)
+
+	fmt.Println(story.Arcs)
 }
