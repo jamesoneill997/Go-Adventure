@@ -49,10 +49,11 @@ func parseStory(arcNames []string, jsonArcs map[string]interface{}) *templates.S
 			arcs = arcs[:i-1]
 		}
 	}
-
-	//write list of arcs to story
-	story.Arcs = arcs
-
+	story.Arcs = make(map[string]templates.Arc)
+	for i := range arcs {
+		story.Arcs[arcNames[i]] = arcs[i]
+	}
+	fmt.Println(story)
 	return story
 }
 
@@ -71,9 +72,11 @@ func myHandler(st *templates.Story) http.Handler {
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	tplate := template.Must(template.New("").Parse(htmlTemplate))
 
-	fmt.Println(h.story.Arcs)
+	for _, st := range h.story.Arcs {
+		fmt.Println(st)
+	}
 
-	err := tplate.Execute(w, h.story.Arcs[0])
+	err := tplate.Execute(w, h.story.Arcs["intro"])
 
 	if err != nil {
 		fmt.Println(err)

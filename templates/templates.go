@@ -2,7 +2,7 @@ package templates
 
 //Story struct contains list of arcs
 type Story struct {
-	Arcs []Arc `json:"arcs"`
+	Arcs map[string]Arc `json:"arcs"`
 }
 
 //An Arc type may store a chapter or a character
