@@ -53,7 +53,7 @@ func parseStory(arcNames []string, jsonArcs map[string]interface{}) *templates.S
 	for i := range arcs {
 		story.Arcs[arcNames[i]] = arcs[i]
 	}
-	fmt.Println(story)
+
 	return story
 }
 
@@ -71,10 +71,6 @@ func myHandler(st *templates.Story) http.Handler {
 //ServeHTTP function
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	tplate := template.Must(template.New("").Parse(htmlTemplate))
-
-	for _, st := range h.story.Arcs {
-		fmt.Println(st)
-	}
 
 	err := tplate.Execute(w, h.story.Arcs["intro"])
 
@@ -107,56 +103,3 @@ func main() {
 	fmt.Printf("Serving CYOA on %d\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), h))
 }
-
-/*
-Serving CYOA on 8080
-2020/11/29 22:10:47 http: panic serving [::1]:51692: template: :10: unexpected "}" in operand
-goroutine 6 [running]:
-net/http.(*conn).serve.func1(0xc00010efa0)
-        /usr/local/go/src/net/http/server.go:1801 +0x147
-panic(0x74ea80, 0xc000013a30)
-        /usr/local/go/src/runtime/panic.go:975 +0x47a
-html/template.Must(...)
-        /usr/local/go/src/html/template/template.go:372
-main.handler.ServeHTTP(0xc00000e620, 0x81da60, 0xc00017e0e0, 0xc000196000)
-        /home/james/Desktop/github/go-adventure/src/main.go:72 +0x1f9
-net/http.serverHandler.ServeHTTP(0xc00017e000, 0x81da60, 0xc00017e0e0, 0xc000196000)
-        /usr/local/go/src/net/http/server.go:2843 +0xa3
-net/http.(*conn).serve(0xc00010efa0, 0x81e3a0, 0xc000066740)
-        /usr/local/go/src/net/http/server.go:1925 +0x8ad
-created by net/http.(*Server).Serve
-        /usr/local/go/src/net/http/server.go:2969 +0x36c
-2020/11/29 22:10:47 http: panic serving [::1]:51694: template: :10: unexpected "}" in operand
-goroutine 7 [running]:
-net/http.(*conn).serve.func1(0xc00010f040)
-        /usr/local/go/src/net/http/server.go:1801 +0x147
-panic(0x74ea80, 0xc000013b10)
-        /usr/local/go/src/runtime/panic.go:975 +0x47a
-html/template.Must(...)
-        /usr/local/go/src/html/template/template.go:372
-main.handler.ServeHTTP(0xc00000e620, 0x81da60, 0xc00017e1c0, 0xc000196100)
-        /home/james/Desktop/github/go-adventure/src/main.go:72 +0x1f9
-net/http.serverHandler.ServeHTTP(0xc00017e000, 0x81da60, 0xc00017e1c0, 0xc000196100)
-        /usr/local/go/src/net/http/server.go:2843 +0xa3
-net/http.(*conn).serve(0xc00010f040, 0x81e3a0, 0xc000066840)
-        /usr/local/go/src/net/http/server.go:1925 +0x8ad
-created by net/http.(*Server).Serve
-        /usr/local/go/src/net/http/server.go:2969 +0x36c
-2020/11/29 22:10:47 http: panic serving [::1]:51696: template: :10: unexpected "}" in operand
-goroutine 12 [running]:
-net/http.(*conn).serve.func1(0xc00010f0e0)
-        /usr/local/go/src/net/http/server.go:1801 +0x147
-panic(0x74ea80, 0xc0000940d0)
-        /usr/local/go/src/runtime/panic.go:975 +0x47a
-html/template.Must(...)
-        /usr/local/go/src/html/template/template.go:372
-main.handler.ServeHTTP(0xc00000e620, 0x81da60, 0xc0000a8000, 0xc000096000)
-        /home/james/Desktop/github/go-adventure/src/main.go:72 +0x1f9
-net/http.serverHandler.ServeHTTP(0xc00017e000, 0x81da60, 0xc0000a8000, 0xc000096000)
-        /usr/local/go/src/net/http/server.go:2843 +0xa3
-net/http.(*conn).serve(0xc00010f0e0, 0x81e3a0, 0xc000092000)
-        /usr/local/go/src/net/http/server.go:1925 +0x8ad
-created by net/http.(*Server).Serve
-        /usr/local/go/src/net/http/server.go:2969 +0x36c
-
-*/

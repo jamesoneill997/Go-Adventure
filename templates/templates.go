@@ -15,5 +15,5 @@ type Arc struct {
 //Option struct details options and lists next arc
 type Option struct {
 	Text    string `json:"text"`
-	NextArc string `json:"nextArc"`
+	NextArc string `json:"arc"`
 }
