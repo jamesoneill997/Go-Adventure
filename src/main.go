@@ -44,11 +44,8 @@ func parseStory(arcNames []string, jsonArcs map[string]interface{}) *templates.S
 			log.Fatal("Your story is too large")
 		}
 
-		//trim array to minimum required size
-		if i == len(arcNames)-1 {
-			arcs = arcs[:i-1]
-		}
 	}
+	arcs = arcs[:len(arcNames)]
 	story.Arcs = make(map[string]templates.Arc)
 	for i := range arcs {
 		story.Arcs[arcNames[i]] = arcs[i]
@@ -70,14 +67,33 @@ func myHandler(st *templates.Story) http.Handler {
 
 //ServeHTTP function
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	tplate := template.Must(template.New("").Parse(htmlTemplate))
-
-	err := tplate.Execute(w, h.story.Arcs["intro"])
-
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal(err)
+	//Parse path
+	path := r.URL.Path
+	//if path not set, start at intro
+	if path == "" || path == "/" {
+		path = "/intro"
 	}
+	//remove leading '/'
+	path = path[1:]
+	tplate := template.Must(template.New("").Parse(htmlTemplate))
+	fmt.Println(h.story.Arcs)
+	if arc, ok := h.story.Arcs[path]; ok {
+		err := tplate.Execute(w, arc)
+
+		if err != nil {
+			//error for me
+			log.Printf("%v", err)
+
+			//error for user
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
+
+		}
+
+		return
+	}
+
+	http.Error(w, "Chapter not found", http.StatusNotFound)
+
 }
 
 func main() {
